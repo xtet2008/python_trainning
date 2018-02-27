@@ -1,0 +1,457 @@
+<ac:layout>
+  <ac:layout-section ac:type="single">
+    <ac:layout-cell>
+      <p> </p>
+      <h1 style="text-align: center;">
+        <span>doremi_cron 运营数据后端 性能优化</span>
+      </h1>
+      <h1>
+        <span> <br/> </span>
+      </h1>
+      <h1>
+        <span>A、技术性能优化</span>
+      </h1>
+      <ul>
+        <li>
+          <h3>SQL语句优化</h3>
+          <ul>
+            <li>
+              <h5>1、exists()函数代替多层join </h5>
+              <ul>
+                <li>
+                  <ac:structured-macro ac:name="code">
+                    <ac:parameter ac:name="title">所有机构有效课时数SQL-优化前  平均查询耗时 280秒</ac:parameter>
+                    <ac:parameter ac:name="theme">RDark</ac:parameter>
+                    <ac:parameter ac:name="linenumbers">true</ac:parameter>
+                    <ac:parameter ac:name="language">sql</ac:parameter>
+                    <ac:parameter ac:name="collapse">true</ac:parameter>
+                    <ac:plain-text-body><![CDATA[select
+    s.school_id, count(s.session_id) as cnt
+from
+    (
+        select s.school_id, sa.session_id, sa.student_id from session_activity as sa
+            inner join session as s on s.id = sa.session_id
+            inner join session_activity_pk as sap on sap.session_activity_Id=sa.id
+        and sa.created_at > '2017-02-28' and sa.created_at <= '2017-03-07'
+        and sa.student_id is not null
+        and sap.score>0
+        group by s.school_id ,sa.session_id , sa.student_id
+    ) as s
+group by s.school_id;]]></ac:plain-text-body>
+                  </ac:structured-macro>
+                  <ac:structured-macro ac:name="code">
+                    <ac:parameter ac:name="title">使用 exists()代替多层join优化后 平均耗时 20秒</ac:parameter>
+                    <ac:parameter ac:name="theme">RDark</ac:parameter>
+                    <ac:parameter ac:name="linenumbers">true</ac:parameter>
+                    <ac:parameter ac:name="language">sql</ac:parameter>
+                    <ac:parameter ac:name="collapse">true</ac:parameter>
+                    <ac:plain-text-body><![CDATA[select
+    s.school_id, count(s.session_id) as cnt
+from
+    (
+        select s.school_id, sa.session_id, sa.student_id from session_activity as sa
+            inner join session as s on s.id = sa.session_id
+        and sa.created_at > '2017-02-28' and sa.created_at <= '2017-03-07'
+        and sa.student_id is not null
+        and exists(
+            select 1 from session_activity_pk as sap where sap.session_activity_id = sa.id and sap.score > 0 limit 1
+        )
+        group by s.school_id, sa.session_id, sa.student_id
+    ) as s
+group by s.school_id;]]></ac:plain-text-body>
+                  </ac:structured-macro>
+                  <p>结论：对于时间一个时间范围内的多层查询使用 exists()函数代替多层连接可有效提升查询效率。</p>
+                </li>
+                <li>注：这种提升只对统计一个时间段（比如某周时间范围类）的效果提升明显，对于宏观数据分析那种全表扫描式统计完全不起作用，甚至会拉低效率（具体原因尚且不知）<br/>
+                  <br/>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+        <li>
+          <h3>SQL索引优化</h3>
+          <ul>
+            <li>
+              <h5>1、列出doremi数据库字段使用频率最高，但又没有建索引的字段和表信息 (按字段使用频率，和相关表的数据量(行数)倒序显示)</h5>
+              <ac:structured-macro ac:name="code">
+                <ac:parameter ac:name="title">只显示表中数据量&gt;=100万，并且字段在所有表中的频率出现的次数&gt;=3次的字段</ac:parameter>
+                <ac:parameter ac:name="theme">RDark</ac:parameter>
+                <ac:parameter ac:name="linenumbers">true</ac:parameter>
+                <ac:parameter ac:name="language">sql</ac:parameter>
+                <ac:parameter ac:name="collapse">true</ac:parameter>
+                <ac:plain-text-body><![CDATA[select * from(
+    # 根据字段使用频率，和所在表的数据行数倒序显示相关字段，字段使用频率，相关表，相关表的数量行数
+    select s1.*,s2.table_name,s2.table_rows from (
+        # 按字段名分组统计doremi库中所有字段使用次数 (即：有多少个表中使用了某个字段)
+        select table_schema,column_name,count(1) as column_count from INFORMATION_SCHEMA.COLUMNS where TABLE_SCHEMA='doremi_local'
+            and column_name != 'id' and column_name not like '%_id' group by COLUMN_NAME
+    ) as s1
+    join( # 枚举所有表中所有字段，并附加一列：相关表里面的数据行数
+        select s1.*,s2.table_rows from information_schema.columns as s1
+            inner join information_schema.tables as s2 on s2.table_schema=s1.table_schema and s2.table_name=s1.table_name and s2.table_rows>=1000000
+    ) as s2
+    on s2.table_schema='doremi_local' and s2.column_name = s1.column_name and s1.column_count>=3
+) as s1 where exists(
+    # 只查询字段在相关的表中没有建立索引的数据行
+    select 1 from information_schema.columns where table_schema=s1.table_schema and table_name=s1.table_name and column_name=s1.column_name and column_key=''
+)
+-- order by s1.table_rows desc, s1.column_count desc
+order by s1.column_count desc,s1.table_rows desc
+;]]></ac:plain-text-body>
+              </ac:structured-macro>
+              <p>结论：根据doremi_cron项目查实际的询条件中频率最高的两个分别是 session_activity.created_at 和 session.start_at</p>
+            </li>
+            <li>
+              <h5>2、在SQL语句中where后面常用到的字段中建立索引(如果没有索引的话)</h5>
+              <ac:structured-macro ac:name="code">
+                <ac:parameter ac:name="title"> session_activity增加 created_at字段索引，session表中建立start_at索引</ac:parameter>
+                <ac:parameter ac:name="theme">RDark</ac:parameter>
+                <ac:parameter ac:name="linenumbers">true</ac:parameter>
+                <ac:parameter ac:name="language">sql</ac:parameter>
+                <ac:plain-text-body><![CDATA[alter table session_activity add index created_at # session_activity数据量5KW+, 建立此索引所耗时 80秒+,如果建索引的建议选择合适的时机
+alter table session add index start_at            # session数据量 100W+, 建立此索引共耗时1.38秒]]></ac:plain-text-body>
+              </ac:structured-macro>
+              <h5>3、增加索引对现有数据库的读和写的速度影响</h5>
+              <ul>
+                <li>
+                  <div>SQL查询读取数据测试</div>
+                  <ac:structured-macro ac:name="code">
+                    <ac:parameter ac:name="title">执行【所有机构课时长统计】SQL语句测试读取时长</ac:parameter>
+                    <ac:parameter ac:name="theme">RDark</ac:parameter>
+                    <ac:parameter ac:name="linenumbers">true</ac:parameter>
+                    <ac:parameter ac:name="language">sql</ac:parameter>
+                    <ac:parameter ac:name="collapse">true</ac:parameter>
+                    <ac:plain-text-body><![CDATA[select
+    s.school_id, count(s.session_id) as cnt
+from
+    (
+        select s.school_id, sa.session_id, sa.student_id from session_activity as sa
+            inner join session as s on s.id = sa.session_id
+        and sa.created_at > '2017-02-28' and sa.created_at <= '2017-03-07'
+        and sa.student_id is not null
+        and exists(
+            select 1 from session_activity_pk as sap where sap.session_activity_id = sa.id and sap.score > 0 limit 1
+        )
+        group by s.school_id, sa.session_id, sa.student_id
+    ) as s
+group by s.school_id;]]></ac:plain-text-body>
+                  </ac:structured-macro>
+                  <p>         测试结果：在没有加索引之前执行这段SQL平均耗时约30s，加索引后执行这段SQL平均耗时约10s，5KW+ records 表下建立索引之后<strong>查询效率提升约3倍</strong>
+                  </p>
+                  <p>SQL插入写数据测试</p>
+                  <ac:structured-macro ac:name="code">
+                    <ac:parameter ac:name="title">同步写入1000条，和异步(模拟高并发)写入1000条数据</ac:parameter>
+                    <ac:parameter ac:name="theme">RDark</ac:parameter>
+                    <ac:parameter ac:name="linenumbers">true</ac:parameter>
+                    <ac:parameter ac:name="language">py</ac:parameter>
+                    <ac:parameter ac:name="collapse">true</ac:parameter>
+                    <ac:plain-text-body><![CDATA[#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+# @Time    : 2017/5/22 17:14
+# @Author  : ZhangSheng@xiaoyezi.com
+# @File    : test_sql_write.py.py
+
+from manage import *
+manager.add_command('server', Server())
+manager.add_command('shell', Shell(make_context={'app': app, 'db': db}))
+manager.add_command('export_excel', ExportExcelCommand())
+manager.add_command('export_last_week', LastWeekStudentAndTeacherCommand())
+init_offline_commands(manager)  # new commands
+app_context = app.app_context()
+app_context.push()
+
+from doremi.utils.tools import write_time_to_log
+from doremi.models import SessionActivity,SessionActivityPk
+
+class sql_test(object):
+    def __init__(self):
+        pass
+    session_activity_data = {
+        'session_id': 999,
+        'course_id': 999,
+        'lesson_id': 999
+    }
+
+    session_activity_pk_data = {
+        'session_activity_id': 999,
+        'score': 999,
+        'max_combo': 999
+    }
+
+    @write_time_to_log
+    def sync(self, table, records=5000):
+        result = 0
+        if not table or not isinstance(table, str) or not records:
+            return result
+        else:
+            cls_name = cls_data = ''
+            if table.upper() == 'Session_Activity'.upper():
+                cls_name = SessionActivity
+                cls_data = self.session_activity_data
+            elif table.upper() == 'Session_Activity_Pk'.upper():
+                cls_name = SessionActivityPk
+                cls_data = self.session_activity_pk_data
+            if not(cls_name and cls_data): return result
+
+        for i in range(records):
+            try:
+                db.session.add(cls_name.create(**cls_data))
+                db.session.commit()
+                result += 1
+            except Exception,ex:
+                print Exception,':',ex
+            finally:
+                pass
+        return result
+
+    def insert_sync(self, rows):
+        self.sync('session_activity',rows)
+        self.sync('session_activity_pk',rows)
+
+    def insert_row(self, table):
+        result = 0
+        if not table or not isinstance(table, str):
+            return result
+        else:
+            cls_name = cls_data = ''
+            if table.upper() == 'Session_Activity'.upper():
+                cls_name = SessionActivity
+                cls_data = self.session_activity_data
+            elif table.upper() == 'Session_Activity_Pk'.upper():
+                cls_name = SessionActivityPk
+                cls_data = self.session_activity_pk_data
+            if not(cls_name and cls_data): return result
+
+        try:
+            app_new_context = app.app_context()
+            app_new_context.push()
+            db.session.add(cls_name.create(**cls_data))
+            db.session.commit()
+            result += 1
+        except Exception,ex:
+            print Exception,':',ex
+        finally:
+            app_new_context.pop()
+        return result
+
+    @write_time_to_log
+    def async(self, table, rows=5000):
+        if not rows: return 0
+        import threading
+        threads = []
+        for i in range(rows):
+            threads.append(threading.Thread(target=self.insert_row, args=(table,)))
+        for t in threads:
+            t.setDaemon(True)
+            t.start()
+        # for t in threads:
+        t.join()
+        return rows
+
+    def insert_async(self,rows):
+        self.async("session_activity", rows)
+        self.async("session_activity_pk", rows)
+
+if __name__ == '__main__':
+    sql_test_obj = sql_test()
+    sql_test_obj.insert_sync(1000)
+    sql_test_obj.insert_async(1000)
+    app_context.pop()
+    print '------------end-------------']]></ac:plain-text-body>
+                  </ac:structured-macro>
+                  <ac:structured-macro ac:name="info">
+                    <ac:parameter ac:name="title">加索引对写数据无影响</ac:parameter>
+                    <ac:rich-text-body>
+                      <pre>1000条数据量写入下，加索引前后对比均平均耗时2.35s，5000条数据写入下加索引的前后平均10s， </pre>
+                      <pre>即：对于session_activity和session表分别加入索引后对写数据效率暂不影响</pre>
+                    </ac:rich-text-body>
+                  </ac:structured-macro>
+                  <p>  </p>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+        <li>
+          <h3>MySQL其他配置优化</h3>
+          <ul>
+            <li style="list-style-type: none;background-image: none;">
+              <ul>
+                <li>
+                  <p>
+                    <strong>1、增加缓存</strong>
+                  </p>
+                  <p>        对于相同参数多次频繁查询情况，有显著的提升效果，例如统计的拿一个 3000多的机构列表循环遍历统计机构相关的其他上课情况，每次循环的循环体中都包含执行相同的SQL 语句，这种情况后面的查询都可拿第1次查询的结合缓存作为结果返回，而不用去重新执行统计，所以能提升读的效率。</p>
+                </li>
+                <li>
+                  <ac:structured-macro ac:name="code">
+                    <ac:parameter ac:name="title">优点</ac:parameter>
+                    <ac:parameter ac:name="theme">RDark</ac:parameter>
+                    <ac:parameter ac:name="collapse">true</ac:parameter>
+                    <ac:plain-text-body><![CDATA[1、缓存对于一些MySql自身很难优化的查询来说会工作地很好，比如大规模的聚合或者分组的查询。
+2、缓存对于提高系统的吞吐率来说可能是个不错的方案。比如对于多人同时访问应用时响应速度很慢的情况。
+3、缓存可能更容易构建在另一个应用之上。比如：你的应用可能是另一个用MySQL存储数据的软件包的前端，而要对这个软件包做任何数据库方面的改动都非常难。]]></ac:plain-text-body>
+                  </ac:structured-macro>
+                  <ac:structured-macro ac:name="code">
+                    <ac:parameter ac:name="title">缺点</ac:parameter>
+                    <ac:parameter ac:name="theme">RDark</ac:parameter>
+                    <ac:parameter ac:name="collapse">true</ac:parameter>
+                    <ac:plain-text-body><![CDATA[1、如果数据对外提供多种存取范式（例如，在不同的页面上用不同的形式展示），那么让缓存过期或者更新可能会很难，同时/或者可能需要容忍已过期的数据。一个可行的替代方案是设计一套更加精细的缓存机制，当然它也有缺点，即多次获取缓存会增加时延。
+2、缓存一个产生代价昂贵的对象对于那些未命中缓存的用户（见优化MySQL的优势#1）而言可能会产生潜在的性能差异。一些好的性能实践表明你应该尽量缩小用户之间的差异性，而不仅仅是平均化（缓存倾向于这么做）。
+3、幼稚的缓存实现无力应对一些微妙的漏洞，比如雪崩效应。就在上周我帮助了一个人，他的数据库服务器被多个试图同时再生同样缓存内容的用户请求冲垮。正确的策略是引入一定级别的锁来将缓存再生的请求序列化。]]></ac:plain-text-body>
+                  </ac:structured-macro>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </ac:layout-cell>
+  </ac:layout-section>
+  <ac:layout-section ac:type="single">
+    <ac:layout-cell>
+      <h3 style="margin-left: 30.0px;">    </h3>
+      <h1>B、业务逻辑构架优化</h1>
+      <p style="margin-left: 30.0px;">
+        <ac:link>
+          <ri:page ri:content-title="钢琴教室新运营系统数据说明"/>
+          <ac:plain-text-link-body><![CDATA[钢琴教室新运营系统数据说明]]></ac:plain-text-link-body>
+        </ac:link>
+      </p>
+      <p style="margin-left: 30.0px;">目前该数据分析系统的后端业务统计逻辑是：根据每个数据需求，即：展示某个页面或页面中的部分数据，单独去写一套业务逻辑并作为服务在服务器上每周跑一次cron任务，抓取一个时间段的数据统计出来并存放到单独的数据库表中。</p>
+      <p style="margin-left: 30.0px;"> </p>
+      <p style="margin-left: 30.0px;">大致有5个cron业务逻辑，及产生5笔offline静态数据，并存放在以 stat_业务表名  的方式储存。</p>
+      <ac:structured-macro ac:name="code">
+        <ac:parameter ac:name="title">目前后台统计数据业务逻辑</ac:parameter>
+        <ac:parameter ac:name="theme">RDark</ac:parameter>
+        <ac:parameter ac:name="linenumbers">true</ac:parameter>
+        <ac:parameter ac:name="language">py</ac:parameter>
+        <ac:parameter ac:name="collapse">true</ac:parameter>
+        <ac:plain-text-body><![CDATA[start, end = '2017-04-03','2017-04-10'
+ 
+stat_cur_school.run('all', start, end)  # all , stat_schools, stat_classes
+stat_macro.run(start, end) # stat_macro
+stat_active.run(start, end) # stat_active
+stat_school.run(start, end) # stat_school
+stat_cur_school.run('export_school_info',start, end) # export excel file and send the mail to the Users which wanna see the report.]]></ac:plain-text-body>
+      </ac:structured-macro>
+      <p style="margin-left: 30.0px;">
+        <strong> </strong>
+      </p>
+      <p style="margin-left: 30.0px;">
+        <strong>分析后归纳得出目前该系统主要统计的对象和维度如下：</strong>
+      </p>
+      <p style="margin-left: 30.0px;">纵向维度固定6个：【机构】【教室】【班级】【教师】【学生】【课时】，只不过确保是从零乱的raw原始数据中找出其相关联的数据，才能更好的反映出运营状况</p>
+      <p style="margin-left: 30.0px;">横向维度常用4个：【日】【周】【月】【ALL】</p>
+      <p style="margin-left: 30.0px;"> </p>
+      <p style="margin-left: 30.0px;">
+        <strong>所以建议可以优化成：</strong>
+        <ac:link>
+          <ri:page ri:content-title="运营数据-按区域"/>
+          <ac:plain-text-link-body><![CDATA[运营数据-按区域]]></ac:plain-text-link-body>
+        </ac:link>  按日(day)为最小的时间粒度，统计这6个固定列的纵向 【增量】和【总量】数据，每日跑一次cron任务，并且该任务只统计昨天当天的数据并生成一笔数据。</p>
+      <p style="margin-left: 30.0px;">所有的报表需求时间维度的变换可在以上结果中根据【时间】粒度去聚合查询，列需求上的变换也可以基于以上6个基本列组合查询得出，如果实在得不出再确定是否需求合理或考虑是否另写代码</p>
+    </ac:layout-cell>
+  </ac:layout-section>
+  <ac:layout-section ac:type="single">
+    <ac:layout-cell>
+      <h1>C、优化后cron综合对比测试</h1>
+      <ac:structured-macro ac:name="code">
+        <ac:parameter ac:name="title">综合测试doremi_cron运行效率</ac:parameter>
+        <ac:parameter ac:name="theme">RDark</ac:parameter>
+        <ac:parameter ac:name="linenumbers">true</ac:parameter>
+        <ac:parameter ac:name="language">py</ac:parameter>
+        <ac:parameter ac:name="collapse">true</ac:parameter>
+        <ac:plain-text-body><![CDATA[# 数据库为两种环境已加过索引的 doremi_A 和尚未加索引的 doremi_B (线上环境和测试环境都尚未加索引)
+ 
+# 测试时间段为随机的抽取日常的某周时间范围
+start, end = '2017-04-03','2017-04-10'
+ 
+# 日常活跃量数据，即，一周内每天的活跃数据都统计并生成一天的记录，遇到周的第一天就统计该周的数据，遇到该月的第一天就统计整月的数据。
+stat_active.run(start, end) ]]></ac:plain-text-body>
+      </ac:structured-macro>
+      <ac:structured-macro ac:name="info">
+        <ac:parameter ac:name="title">测试结果</ac:parameter>
+        <ac:rich-text-body>
+          <p> stat_active 在doremi_B数据库中加索引后的运行时间平均在 60s左右(约1分钟) ，doremi_A不加索引大概平均时间在3000s左右(约1个小时)</p>
+        </ac:rich-text-body>
+      </ac:structured-macro>
+    </ac:layout-cell>
+  </ac:layout-section>
+</ac:layout>
+<ac:layout>
+  <ac:layout-section ac:type="single">
+    <ac:layout-cell>
+      <p> </p>
+    </ac:layout-cell>
+  </ac:layout-section>
+  <ac:layout-section ac:type="single">
+    <ac:layout-cell>
+      <h3 style="margin-left: 30.0px;">    </h3>
+      <h1>B、业务逻辑构架优化</h1>
+      <p style="margin-left: 30.0px;">
+        <ac:link>
+          <ri:page ri:content-title="钢琴教室新运营系统数据说明"/>
+          <ac:plain-text-link-body><![CDATA[钢琴教室新运营系统数据说明]]></ac:plain-text-link-body>
+        </ac:link>
+      </p>
+      <p style="margin-left: 30.0px;">目前该数据分析系统的后端业务统计逻辑是：根据每个数据需求，即：展示某个页面或页面中的部分数据，单独去写一套业务逻辑并作为服务在服务器上每周跑一次cron任务，抓取一个时间段的数据统计出来并存放到单独的数据库表中。</p>
+      <p style="margin-left: 30.0px;"> </p>
+      <p style="margin-left: 30.0px;">大致有5个cron业务逻辑，及产生5笔offline静态数据，并存放在以 stat_业务表名  的方式储存。</p>
+      <ac:structured-macro ac:name="code">
+        <ac:parameter ac:name="title">目前后台统计数据业务逻辑</ac:parameter>
+        <ac:parameter ac:name="theme">RDark</ac:parameter>
+        <ac:parameter ac:name="linenumbers">true</ac:parameter>
+        <ac:parameter ac:name="language">py</ac:parameter>
+        <ac:parameter ac:name="collapse">true</ac:parameter>
+        <ac:plain-text-body><![CDATA[start, end = '2017-04-03','2017-04-10'
+ 
+stat_cur_school.run('all', start, end)  # all , stat_schools, stat_classes
+stat_macro.run(start, end) # stat_macro
+stat_active.run(start, end) # stat_active
+stat_school.run(start, end) # stat_school
+stat_cur_school.run('export_school_info',start, end) # export excel file and send the mail to the Users which wanna see the report.]]></ac:plain-text-body>
+      </ac:structured-macro>
+      <p style="margin-left: 30.0px;">
+        <strong> </strong>
+      </p>
+      <p style="margin-left: 30.0px;">
+        <strong>分析后归纳得出目前该系统主要统计的对象和维度如下：</strong>
+      </p>
+      <p style="margin-left: 30.0px;">纵向维度固定6个：【机构】【教室】【班级】【教师】【学生】【课时】，只不过确保是从零乱的raw原始数据中找出其相关联的数据，才能更好的反映出运营状况</p>
+      <p style="margin-left: 30.0px;">横向维度常用4个：【日】【周】【月】【ALL】</p>
+      <p style="margin-left: 30.0px;"> </p>
+      <p style="margin-left: 30.0px;">所以建议可以优化成：按日(day)为最小的时间粒度，统计这6个固定列的纵向 【增量】和【总量】数据，每日跑一次cron任务，并且该任务只统计昨天当天的数据并生成一笔数据。</p>
+      <p style="margin-left: 30.0px;">所有的报表需求时间维度的变换可在以上结果中根据【时间】粒度去</p>
+      <pre>聚合</pre>
+      <p style="margin-left: 30.0px;"> </p>
+      <p> </p>
+    </ac:layout-cell>
+  </ac:layout-section>
+  <ac:layout-section ac:type="single">
+    <ac:layout-cell>
+      <h1>C、优化后cron综合对比测试</h1>
+      <ac:structured-macro ac:name="code">
+        <ac:parameter ac:name="title">综合测试doremi_cron运行效率</ac:parameter>
+        <ac:parameter ac:name="theme">RDark</ac:parameter>
+        <ac:parameter ac:name="linenumbers">true</ac:parameter>
+        <ac:parameter ac:name="language">py</ac:parameter>
+        <ac:parameter ac:name="collapse">true</ac:parameter>
+        <ac:plain-text-body><![CDATA[# 数据库为两种环境已加过索引的 doremi_A 和尚未加索引的 doremi_B (线上环境和测试环境都尚未加索引)
+ 
+# 测试时间段为随机的抽取日常的某周时间范围
+start, end = '2017-04-03','2017-04-10'
+ 
+# 日常活跃量数据，即，一周内每天的活跃数据都统计并生成一天的记录，遇到周的第一天就统计该周的数据，遇到该月的第一天就统计整月的数据。
+stat_active.run(start, end) ]]></ac:plain-text-body>
+      </ac:structured-macro>
+      <ac:structured-macro ac:name="info">
+        <ac:parameter ac:name="title">测试结果</ac:parameter>
+        <ac:rich-text-body>
+          <p> stat_active 在doremi_B数据库中加索引后的运行时间平均在 60s左右(约1分钟) ，doremi_A不加索引大概平均时间在3000s左右(约1个小时)</p>
+        </ac:rich-text-body>
+      </ac:structured-macro>
+    </ac:layout-cell>
+  </ac:layout-section>
+</ac:layout>

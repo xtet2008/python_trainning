@@ -1,0 +1,938 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head><link href="../OrientalFashion/OFpublicStyle.css" rel="stylesheet" type="text/css" /><link id="ctl00_link1" href="../OrientalFashion/OF_style_gray.css" rel="stylesheet" type="text/css" /><link href="../OrientalFashion/OF_style_main.css" rel="stylesheet" type="text/css" /><link href="/css/buttons.css" rel="stylesheet" type="text/css" />
+    <script src="../Scripts/MainScript.js" type="text/javascript"></script>
+    <script src="../Scripts/jquery-1.8.1.js" type="text/javascript"></script>
+    <script src="../Scripts/jquery-1.8.0.min.js" type="text/javascript"></script>
+    <script src="../Scripts/AjaxJScript.js" type="text/javascript"></script>
+    <script src="../Scripts/MainScript.js" type="text/javascript"></script>
+
+
+    <script type="text/javascript" language="javascript">
+        $(document).ready(function () {
+            var nowdate = new Date();
+            var year = nowdate.getFullYear(); //年
+            var Month = nowdate.getMonth() + 1;  //月
+            var date = nowdate.getDate();   //日
+            var day = nowdate.getDay();   //星期
+            var days = ["日 ", "一 ", "二 ", "三 ", "四 ", "五 ", "六 "];
+            $("#nowdate").after("今天是" + year + "年" + Month + "月" + date + "日" + "   " + "星期" + days[day]);
+
+            var pcData = { AjaxMethod: "jbxx" };
+            sendPost("../DfssAjax.aspx", pcData, jbxxCallback);
+            function jbxxCallback(responseText) {
+                var jsonData = eval(responseText);
+                $("#header").attr("src", "" + jsonData[0].fchrPhoto);
+                $("#studentName").html("欢迎您:" + jsonData[0].fchrStudentName + "&nbsp;学号:" + jsonData[0].fchrStudentID);
+            }
+
+
+        });
+        function editPassWord() {
+            location.href = "/pc-client/editPassWord.aspx";
+        }
+        function btnExit_onClick() {
+            window.location = "LoginOut.aspx";
+        }
+    </script>
+    <script type="text/javascript">
+        function document.onkeydown() {
+            if (window.event.keyCode == '116 ') {
+                //            window.alert( '不允许按F5狂刷新：） ');
+                window.event.keyCode = 0;
+                window.event.returnValue = false;
+            }
+        }
+    </script>
+<title>
+
+</title></head>
+<body style="background: #dea106">
+    <form name="aspnetForm" method="post" action="wsyc.aspx?stuid=15147948" id="aspnetForm">
+<div>
+<input type="hidden" name="__VIEWSTATE" id="__VIEWSTATE" value="/wEPDwUKMTE4MjkyMjc2N2RkLhFrIARkv/p116ttiRCNzKc94cjsnVsBXV3w2YGMKuc=" />
+</div>
+
+    <div class="ZF_xy_top">
+        <img src="../OrientalFashion/img/XY-top.jpg" alt="" />
+    </div>
+    <div class="ZF_xy_main">
+        <div class="ZF_xy_head">
+            <img src="" id="header" alt="" style="width: 100px; height: 123px;" />
+        </div>
+        <div class="ZF_xy_Msg">
+            <h1>
+                东方时尚欢迎您:<br />
+                <b id="studentName"></b><b id="studentId"></b>
+            </h1>
+            <h2 id="nowdate" style="right: 20px;">
+                <input type="button" value="修改密码" id="editPassWord" onclick="location.href='/pc-client/editPassWord.aspx'"
+                    style="width: 80px;" />
+                <input type="button" value="注销" id="btnExit" onclick="btnExit_onClick(); " style="width: 70px;" />
+            </h2>
+        </div>
+
+    <meta http-equiv="charset" content="utf-8" />
+    <title>学员约车管理</title>
+    <link href="/JS/themes/bootstrap/easyui.css" rel="stylesheet" type="text/css" />
+    <link href="/JS/themes/icon.css" rel="stylesheet" type="text/css" />
+    <script src="/JS/jquery-1.8.0.min.js" type="text/javascript"></script>
+    <script src="/JS/jquery.easyui.min.js" type="text/javascript"></script>
+    <script src="/JS/easyui-lang-zh_CN.js" type="text/javascript"></script>
+    <script src="/js/My97DatePicker/WdatePicker.js" type="text/javascript"></script>
+    <script src="/JS/Comm/TMPublic.js" type="text/javascript"></script>
+    <script src="/JS/print.js" type="text/javascript"></script>
+    <style type="text/css">
+        td
+        {
+            height: 28px;
+        }
+        #tabled td
+        {
+            height: 20px;
+        }
+    </style>
+    <script type="text/javascript">
+        var start = ""; //开始时段
+        var end = ""; //结束时段
+        var trainsessionid = "";
+        var selectdate = ""; //日期
+        var showvalue = ""; //约车单元格显示值样式
+        var mousex = "";
+        var mousey = "";
+        var cellClickRowIndex = ""; //约车信息中的行索引
+        var cellField = ""; //约车信息中的列值
+        var newcarid = ""; //新车号
+        var ycmethod = "03"; //约车方式
+        var cartypeid = ""; //约车车型
+
+
+        $(function () {
+            //banding鼠标事件
+            $(document).mousemove(function (e) {
+                mousex = e.pageX;
+                mousey = e.pageY;
+            });
+
+
+            $("input:not([id='sid'],[id='sfid'],[id='carid'],[id='mPhone'],[id='TxtValid'])").attr("readonly", true);
+            $("input:not([id='sid'],[id='sfid'],[id='carid'])").addClass(".input");
+            $.ajaxSetup({ cache: false }); //禁用ajax缓存
+
+            //学员信息查询
+            $("#btnSchedule").click(function () {
+                var sStudentID = $("#sid").val();
+
+                var sURL
+                sURL = "/master/frmReport.aspx?stateCode=Rep_Schedule&fchrStudentID=" + sStudentID;
+
+                showModal(sURL);
+            })
+            //学员信息查询
+            $("#BTNFind").click(function () {
+                var tex = $("#sid").val();
+                var tex1 = $("#sfid").val();
+                if (tex == "" && tex1 == "") {
+                    $.messager.alert("警告", "学员编号不能为空！", "warning", function () {
+                        $("#sid").focus();
+                    });
+
+                    return;
+                }
+                ShowLoading();
+                $.ajaxSetup({ cache: false }); //禁用ajax缓存
+                $.ajax({
+                    type: "post",
+                    cache: false,
+                    url: "/Ajax/StuHdl.ashx?loginType=2&method=stu&stuid=" + $("#sid").val() + "&sfznum=" + $("#sfid").val() + "&carid=" + $("#carid").val() + "&ValidCode=" + $("#TxtValid").val(),
+                    success: function (data) {
+                        var result = data.split("||||"); //0:学生信息；1：表体数据；2：表头数据；3：课程各个阶段
+                        if (result.length == 1) {
+                            HideLoading();
+                            ShowMsg(data);
+                            return;
+                        }
+                        if (result[0] == "nodata") {
+                            HideLoading();
+                            ShowMsg("没有此学员信息或学员进度表信息不正确！");
+                            $('#TData').datagrid('loadData', eval("[]"));
+                        }
+                        else {
+                            var ss = eval(result[0]); //学生信息赋值
+                            for (var i = 0; i < ss.length; i++) {
+                                $("#fchrStudentID").val(ss[i].fchrStudentID);
+                                $("#fchrStudentName").val(ss[i].fchrStudentName);
+                                $("#fchrIDCardNO").val(ss[i].fchrIDCardNO);
+                                $("#fchrLessonTypeName").val(ss[i].fchrLessonTypeName);
+                                $("#fchrLessonName").val(ss[i].fchrLessonName);
+                                $("#stuTotal").val(ss[i].stuTotal);
+                                $("#trainTotal").val(ss[i].trainTotal);
+                                $("#ContractTotal").val(ss[i].ContractTotal);
+                                $("#fpsucess").val(ss[i].fpsucess);
+                                $("#zksucess").val(ss[i].zksucess);
+                                $("#messager").val(ss[i].messager);
+                                $("#fchrRegistrationID").val(ss[i].fchrRegistrationID);
+                                $("#fchrLessonID").val(ss[i].fchrLessonID);
+                                $("#fchrTrainPriceID").val(ss[i].fchrTrainPriceID);
+                                $("#fintType").val(ss[i].fintType);
+                                $("#fpsucessdate").val(ss[i].fpsucessdate);
+                                $("#fchrLessonTypeID").val(ss[i].fchrLessonTypeID);
+
+                                //绑定的教练
+                                $("#fchrRegToCoachID").val(ss[i].fchrRegToCoachID);
+                                $("#fchrRegToCoachName").val(ss[i].fchrRegToCoachName);
+
+                                cartypeid = ss[i].fchrCarTypeID;
+
+                                FreshValid();
+                            }
+                            //给训练阶段赋值
+                            var perid = eval(result[3]);
+                            $("#DivPeriod").empty();
+                            var sdisbled = "";
+                            var start = -1;
+                            for (i = 0; i < perid.length; i++) {
+                                if (start <= -1) {
+                                    $("#DivPeriod").append("<input name='period' style='width:20px;' type='radio' id='" + perid[i].fchrLessonID + "'> " + perid[i].fchrLessonName);
+                                    if (perid[i].fchrLessonName == $("#fchrLessonName").val()) {
+                                        $("#" + perid[i].fchrLessonID).attr("checked", true);
+                                        start = i;
+                                    }
+                                }
+                                else {
+                                    //                                    if (i > start) {
+                                    //                                        sdisbled = " disabled='disabled' ";
+                                    //                                    }
+                                    //                                    else
+                                    //                                        sdisbled = "";
+
+                                    $("#DivPeriod").append("<input name='period' style='width:20px;' type='radio'" + sdisbled + " id='" + perid[i].fchrLessonID + "'> " + perid[i].fchrLessonName);
+                                    if (i > start) {
+                                        $("#" + perid[i].fchrLessonID).attr("disabled", true);
+                                    }
+                                }
+                            }
+                            //为课程绑定事件查看各个课程约车情况
+                            $('input:radio').click(function () {
+                                if ($(this).attr('checked')) {
+                                    ShowLoading();
+                                    $.ajax({ url: "/Ajax/StuHdl.ashx?loginType=2&method=Browser&stuid=" + $("#fchrStudentID").val() + "&lessonid=" + $(this).attr('id') + "&cartypeid=" + cartypeid + "&carid=" + $("#carid").val() + "&ValidCode=" + $("#TxtValid").val(),
+                                        type: 'post', cache: false,
+                                        success: function (data) {
+                                            var result = data.split("||");
+                                            if (result.length > 0) {//0:成功标志，1：表头数据，2：表体数据
+                                                if (result[0] == "success") {
+                                                    var options = { iconcls: "icon-edit", width: 800, height: 400, nowrap: false, striped: true, collapsible: false, fit: false, remoteSort: true, singleSelect: true, pagination: false, rownumbers: true };
+
+                                                    if (result[1].length > 3) {
+                                                        options.columns = eval("[" + result[1] + "]");
+                                                        $("#TData").datagrid(options);
+                                                        $('#TData').datagrid('loadData', eval("{rows:" + result[2] + "}"));
+                                                    }
+                                                    else {
+                                                        options.columns = eval("[]");
+                                                        $("#TData").datagrid(options);
+                                                        $('#TData').datagrid('loadData', eval("[]"));
+                                                    }
+                                                    FreshValid();
+                                                }
+                                                else {
+                                                    options.columns = eval("[]");
+                                                    $("#TData").datagrid(options);
+                                                    $('#TData').datagrid('loadData', eval("[]"));
+                                                }
+                                                HideLoading();
+                                            }
+                                        }, error: function () {
+                                            HideLoading();
+                                            $.messager.alert("错误", "网络错误！", "error");
+                                        }
+                                    });
+                                }
+                            });
+
+                            var options = { iconcls: "icon-edit", width: 800, height: 400, nowrap: false, striped: true, collapsible: false, fit: false, remoteSort: true, singleSelect: true, pagination: false, rownumbers: true };
+
+                            if (result[1].length > 3) {
+                                options.columns = eval("[" + result[2] + "]");
+                                $("#TData").datagrid(options);
+                                $('#TData').datagrid('loadData', eval("{rows:" + result[1] + "}"));
+                                $('#TData').datagrid('resize');
+                            }
+                            else {
+                                options.columns = eval("[]");
+                                $("#TData").datagrid(options);
+                                $('#TData').datagrid('loadData', eval("[]"));
+                            }
+
+                            HideLoading();
+                            //备注信息
+                            if (result[4] != undefined && result[4] != "") {
+                                var jsonRemark = eval(result[4]);
+                                if (jsonRemark.length > 0)
+                                    $("#Remark").val(jsonRemark[0].fchrRemark);
+                            }
+                        }
+                    },
+                    error: function () {
+                        HideLoading();
+                        alert("AJAX请求失败，请检查网络！");
+                    }
+                });
+                $("#divRemark").dialog({ title: "修改备注", closable: true, noheader: false, border: true, shadow: true }).dialog("close");
+                //弹出修改备注
+                $("#btnPopRemark").click(function () {
+                    $("#divRemark").dialog("open");
+                    $("#fchrRemark").val($("#Remark").val());
+                    $("#fchrRemark").focus();
+
+                })
+
+                //备注
+                $("#btnEditRemarkCancel").click(function () {
+                    $("#divRemark").dialog("close");
+                })
+                $("#btnEditRemark").click(function () {
+                    if ($("#fchrRemark").val() == "") {
+                        //                        ShowMsg("请输入备注文字!");
+                        $("#divRemark").dialog("close");
+                        return;
+                    }
+                    //调用后台修改程序
+                    $.ajax({ url: "/Ajax/StuHdl.ashx?loginType=2&method=editRemark&stuid=" + $("#fchrStudentID").val() + "&regid=" + $("#fchrRegistrationID").val() + "&remark=" + encodeURI($("#fchrRemark").val()) + "&ValidCode=" + $("#TxtValid").val(),
+                        type: "post", cache: false,
+                        success: function (data) {
+                            if (data == "success") {
+                                $("#divRemark").dialog("close");
+                                $("#Remark").val($("#fchrRemark").val())
+                                $("#fchrRemark").val("");
+                            }
+                            else {
+                                ShowError(data);
+                            }
+                        }
+                          , error: function () { $.messager.alert("错误", "提交服务器失败！", "error"); }
+                    });
+                })
+
+                //分页 -- 约车
+                ShowGridPager("dgyueche", 20);
+                $('#dgyueche').hide();
+
+
+                //分页 -- 换车号
+                ShowGridPager("dgchange", 20);
+                $('#dgchange').hide();
+
+            });
+
+
+            //更换车号
+            function ChangeCarFun(start, end, carid, lessonid, changedate) {
+
+                if (lessonid != "001" && lessonid != "007")
+                    return;
+
+                //                var options = $("#dgchange").datagrid("options");
+                //                options.url = "/Ajax/StuHdl.ashx?loginType=2&method=loadcarinf&start=" + start + "&end=" + end + "&stuid=" + $("#fchrStudentID").val() + "&carid=" + carid + "&lessonid=" + lessonid + "&changedate=" + changedate + "&id=0&cartypeid=" + cartypeid + "&trainsessionid=" + trainsessionid + "&caridfind=" + $("#carid").val();
+
+                //                options.pagination = "true";
+                //                $("#dgchange").datagrid(options);
+                $("#changecardialog").dialog({ title: "取消约车", iconCls: "icon-edit", width: 700, height: 500, modal: true,
+                    buttons: [{ text: '取消约车', iconCls: 'icon-ok', handler: function () {
+                        CancelFun(start, end, selectdate, showvalue[0], trainsessionid);
+                    }
+                    }, { text: '关闭', iconCls: 'icon-cancel', handler: function () {
+                        $("#changecardialog").dialog("close");
+                    }
+                    }]
+                });
+
+
+            }
+
+
+            $("#dgchange").datagrid({ width: "auto", height: "auto", nowrap: true, striped: true, collapsible: false, fit: true, remoteSort: true, singleSelect: true, pagination: false, rownumbers: true,
+                loadMsg: "数据加载中请稍后……",
+                columns: [[{ field: 'fchrCarInfoID', title: '车号', align: 'center', width: 80 },
+                    { field: 'fchrCoachID', title: '主教练', align: 'center', width: 80 },
+                    { field: 'fchrCoachName', title: '主教练', align: 'center', width: 90 },
+                    { field: 'totalday', title: '天数', align: 'center', width: 50 },
+                    { field: 'fchrReleaseCarID', title: '', align: 'center', width: 100, hidden: true },
+                    { field: 'fintMaximum', title: '最大人数', align: 'center', width: 60 },
+                    { field: 'fintRemain', title: '剩余', align: 'center', width: 50 },
+                    { field: 'fchrDates', title: '训练日期', align: 'center', width: 250 }
+                    ]], onSelect: function (rowindex, row) {
+                        newcarid = row.fchrCarInfoID;
+                        ShowLoading();
+                        $.ajax({ url: "/Ajax/StuHdl.ashx?loginType=2&method=changecar&start=" + start + "&end=" + end + "&newcarid=" + row.fchrCarInfoID + "&lessonid=" + $("input:radio:checked").attr("id") + "&changedate=" + selectdate + "&stuid=" + $("#fchrStudentID").val() + "&trainsessionid=" + trainsessionid + "&ycmethod=" + ycmethod + "&ValidCode=" + $("#TxtValid").val(),
+                            type: "post", cache: false,
+                            success: function (data) {
+                                HideLoading();
+                                if (data == "guoshi") {
+                                    $.messager.alert("警告", "时间已过，不能换车号！", "warning");
+                                    return;
+                                }
+                                if (data == "success") {
+                                    $.messager.alert("信息", "更换成功！", "info");
+                                    $("#changecardialog").dialog("close");
+                                    //$("#BTNFind").triggerHandler("click");
+                                    var clickrows = $("#TData").datagrid("getRows"); //找到原车号所在
+                                    clickrows[cellClickRowIndex][cellField] = newcarid; //赋值新车号
+                                    $("#TData").datagrid("refreshRow", cellClickRowIndex);
+                                    //$("#TData").datagrid('acceptChanges');
+                                    FreshValid();
+                                }
+                                if (data == "alreadytrain") {
+                                    $.messager.alert("警告", "已经训练，不能换车号！", "warning");
+                                    return;
+                                }
+                                if (data == "error") {
+                                    $.messager.alert("错误", "数据查询错误！", "error");
+                                    return;
+                                }
+                                if (data == "canot") {
+                                    $.messager.alert("错误", "没有找到新车号信息！", "error");
+                                    return;
+                                }
+                            }
+                            , error: function () { HideLoading(); $.messager.alert("错误", "提交服务器失败！", "error"); }
+                        });
+                    }
+
+            });
+
+            //初始化datagrid
+            $("#dgyueche").datagrid({ width: 1000, height: 800, nowrap: false, striped: true, collapsible: false, fit: true, remoteSort: true, singleSelect: true, pagination: false, rownumbers: true,
+                loadMsg: "数据加载中请稍后……",
+                columns: [[
+                    { title: '图片', field: 'image', width: 100,  align: 'center',
+                        formatter:function(value,row,index){return '<img width="100px" src="'+row.fchrPhoto+'" />';}
+                    },
+                    { field: 'fchrCarInfoID', title: '车辆编号', align: 'center', width: 80 },
+                    { field: 'fchrCoachID', title: '主教练', align: 'center', width: 70 },
+                    { field: 'fchrCoachName', title: '主教练', align: 'center', width: 80 },
+                    { field: 'fchrCarNO', title: '车牌号', align: 'center', width: 80 },
+                    { field: 'totalday', title: '天数', align: 'center', width: 30 },
+                    { field: 'fchrReleaseCarID', title: '', align: 'center', width: 100, hidden: true },
+                    { field: 'fintMaximum', title: '最大可约', align: 'center', width: 60 },
+                    { field: 'fintRemain', title: '可约', align: 'center', width: 50 },
+                    { field: 'fchrDates', title: '训练日期', align: 'left', width: 250 }
+                    ]],
+                onSelect: function (rowindex, row) {
+                    if (row) {
+                        YueCheFunc(showvalue, 0, row.fchrCarInfoID, row.fchrReleaseCarID);
+                    }
+                }
+            }); //end dgyueche grid
+
+
+            //约车id=0:自选车号；id=1：随机分配
+            function YueCheFunc(valarr, id, carid, ReleaseCarID) {
+                if ($("#fintType").val == 0) {
+                    HideLoading();
+                    $.messager.alert("警告", "处在考试阶段，不能约车！", "warning");
+                    return false;
+                }
+                if (parseInt(valarr[1]) == 0) {
+                    HideLoading();
+                    $.messager.alert("警告", "已约人数已满！", "warning");
+                    return false;
+                }
+                if (!confirm("确定要约车? 24小时内的车不能取消")) {
+                    return false;
+                }
+                ShowLoading();
+                $.ajax({ type: "post",
+                    cache: false,
+                    url: "/Ajax/StuHdl.ashx?loginType=2&method=yueche&stuid=" + $("#fchrStudentID").val() + "&bmnum=" + $("#fchrRegistrationID").val() + "&start=" + start + "&end=" + end + "&lessionid=" + $("input:radio:checked").attr("id") + "&trainpriceid=" + $("#fchrTrainPriceID").val() + "&lesstypeid=" + $("#fchrLessonTypeID").val() + "&date=" + selectdate + "&id=" + id + "&carid=" + carid + "&ycmethod=" + ycmethod + "&cartypeid=" + cartypeid + "&trainsessionid=" + trainsessionid + "&ReleaseCarID=" + ReleaseCarID + "&ValidCode=" + $("#TxtValid").val(),
+                    success: function (data) {
+                        if (data == "Timeout") {
+                            HideLoading();
+                            $.messager.alert("警告", "当天约车已经超过6小时！", "warning");
+                            return;
+                        }
+                        if (data == "agotime") {
+                            HideLoading();
+                            $.messager.alert("警告", "不能预约以前的车辆！", "warning");
+                            return;
+                        }
+                        if (data == "saverror") {
+                            HideLoading();
+                            $.messager.alert("错误", "数据保存错误！", "error");
+                            return;
+                        }
+                        if (data == "error") {
+                            HideLoading();
+                            $.messager.alert("错误", "读取放车信息出错！", "error");
+                            return;
+                        }
+                        if (data == "overtotal") {
+                            HideLoading();
+                            $.messager.alert("警告", "所约学时超出总学时！", "warning");
+                            return;
+                        }
+                        if (data == "todayhave") {
+                            HideLoading();
+                            $.messager.alert("警告", "已经越过此时段车！", "warning");
+                            return;
+                        }
+                        if (data == "totalstudyerror") {
+                            HideLoading();
+                            $.messager.alert("错误", "找不到学时信息！", "error");
+                            return;
+                        }
+                        if (data == "success") {
+                            HideLoading();
+                            $("#BTNFind").triggerHandler("click");
+                            $("#yuechedialog").dialog('close');
+                            FreshValid();
+                        }
+                        else {
+                            HideLoading();
+                            $.messager.alert("错误", data, "error");
+                        }
+                    }
+                });
+            }
+
+            //datagrid分页
+            function pagerFilter(data) {
+                if (typeof data.length == 'number' && typeof data.splice == 'function') {    // is array
+                    data = {
+                        total: data.length,
+                        rows: data
+                    }
+                }
+                var dg = $(this);
+                var opts = dg.datagrid('options');
+                var pager = dg.datagrid('getPager');
+                pager.pagination({
+                    beforePageText: '第', //页数文本框前显示的汉字
+                    afterPageText: '页    共 {pages} 页',
+                    displayMsg: '当前显示 {from} - {to} 条记录   共 {total} 条记录',
+                    onSelectPage: function (pageNum, pageSize) {
+                        opts.pageNumber = pageNum;
+                        opts.pageSize = pageSize;
+                        pager.pagination('refresh', {
+                            pageNumber: pageNum,
+                            pageSize: pageSize
+                        });
+                        dg.datagrid('loadData', data)
+                        //                        $('#dgyueche').datagrid('statistics');
+                    }
+                });
+                if (!data.originalRows) {
+                    data.originalRows = (data.rows);
+                }
+                var start = (opts.pageNumber - 1) * parseInt(opts.pageSize);
+                var end = start + parseInt(opts.pageSize);
+                data.rows = (data.originalRows.slice(start, end));
+                return data;
+            }
+            //初始化约车对话框
+            function yueOpen_Dialog(start, end, carid, lessonid, changedate, trainsessionid) {
+                //控制不能
+                if ($("#" + lessonid).attr("Cannot") == "1") {
+                    alert("未到此进度,不能约车!");
+                    return;
+                }
+
+                $("#yuechedialog").dialog({ title: "约车", iconCls: 'icon-edit', width: 700, height: 500, modal: true,
+                    buttons: [{
+                        text: '随机生成车号', iconCls: 'icon-ok', handler: function () {
+                            YueCheFunc(showvalue, 1, "", "");
+                        }
+                    },
+            { text: '取消', iconCls: 'icon-cancel', handler: function () { $("#yuechedialog").dialog('close'); } }
+
+            ]
+                });
+                var options = $("#dgyueche").datagrid("options");
+                options.url = "/Ajax/StuHdl.ashx?loginType=2&method=loadcarinf&start=" + start + "&end=" + end + "&stuid=" + $("#fchrStudentID").val() + "&carid=" + carid + "&lessonid=" + lessonid + "&changedate=" + changedate + "&id=1&cartypeid=" + cartypeid + "&trainsessionid=" + trainsessionid + "&caridfind=" + $("#carid").val();
+                options.pagination = "true";
+                $("#dgyueche").datagrid(options);
+
+            }
+            //取消约车
+            function CancelFun(start, end, Canceldate, carid, trainsessionid) {
+                if ($("#mPhone").val() == "") {
+                    alert("请输入您报名时填写的手机号");
+                    $("#mPhone").focus();
+                    return;
+                }
+
+
+                $.messager.confirm("询问", "确实要取消本次约车吗？", function (data) {
+                    if (data) {
+                        ShowLoading();
+                        $.ajax({ url: "/Ajax/StuHdl.ashx?loginType=2&method=cancel&stuid=" + $("#fchrStudentID").val() + "&bmnum=" + $("#fchrRegistrationID").val() + "&start=" + start + "&end=" + end + "&lessionid=" + $("input:radio:checked").attr("id") + "&trainpriceid=" + $("#fchrTrainPriceID").val() + "&lesstypeid=" + $("#fchrLessonTypeID").val() + "&date=" + Canceldate + "&carid=" + carid + "&trainsessionid=" + trainsessionid + "&mPhone=" + $("#mPhone").val() + "&ValidCode=" + $("#TxtValid").val(),
+                            type: "post",
+                            cache: false,
+                            success: function (data) {
+                                if (data == "success") {
+                                    $("#BTNFind").triggerHandler("click");
+                                    $("#changecardialog").dialog('close');
+                                    FreshValid();
+                                }
+                                else {
+                                    HideLoading();
+                                    $("#changecardialog").dialog('close');
+                                    if (data == "notchecked") {
+                                        $.messager.alert("错误！", "没有找到学习进度！", "error");
+                                    }
+                                    if (data == "scheduleerror") {
+                                        $.messager.alert("警告！", "学习进度只有一条记录信息！", "warning");
+                                    }
+                                    if (data == "cannotcancel") {
+                                        $.messager.alert("警告！", "不能取消约车！", "warning");
+                                    }
+                                    if (data == "alreadyexam") {
+                                        $.messager.alert("警告！", "已经考试，不能取消约车！", "warning");
+                                    }
+                                    if (data == "alreadytrain") {
+                                        $.messager.alert("警告！", "已经训练，不能取消约车！", "warning");
+                                    }
+                                    if (data == "noperiod") {
+                                        $.messager.alert("错误！", "查找学时信息出错！", "error");
+                                    }
+                                    if (data == "saveerror") {
+                                        $.messager.alert("错误！", "更新数据库出错！", "error");
+                                    }
+                                    if (data == "notcontractrecord") {
+                                        $.messager.alert("错误！", "没有找到约车记录！", "error");
+                                    }
+                                    if (data == "nonextstuperiod") {
+                                        $.messager.alert("错误！", "删除下一进度出错：没有在学时表中找到该记录！", "error");
+                                    }
+                                    if (data == "guoshi") {
+                                        $.messager.alert("错误！", "约车时间超过现在,不能取消！", "warning");
+                                    }
+                                    else {
+                                        $.messager.alert("错误！", data, "warning");
+                                    }
+                                }
+                            }
+                        });
+                    }
+                    else
+                        HideLoading();
+                });
+            }
+
+
+            //定义约车信息明细
+
+            $("#TData").datagrid({
+                iconcls: "icon-edit", width: 800, height: 400, nowrap: true, striped: true, collapsible: false, fit: false, remoteSort: true, singleSelect: true, pagination: false, rownumbers: true,
+                loadMsg: "数据加载中请稍后……",
+                columns: [[]],
+                onResize: function () {
+                }, onLoadSuccess: function (data) { $(this).datagrid('resize'); },
+                onClickCell: function (rowIndex, field, value) {
+                    $("#TData").datagrid("selectRow", rowIndex);
+                    var selectrow = $("#TData").datagrid("getSelected");
+                    if (field == "fchrdate") {
+                        return;
+                    }
+                    var nextsibling = $("input:radio:checked").next();
+                    showvalue = value.split("/"); //根据显示值判断是否已经越过车（越过车显示车号，没有“/”符号）
+                    var title = $("#TData").datagrid("getColumnOption", field); //取得点击列的标题
+                    var fieldarr = eval(title).title.split("-");
+                    start = fieldarr[0].split("(")[1]; //开始时段
+                    end = fieldarr[1].split(")")[0]; //结束时段
+                    trainsessionid = fieldarr[0].split("(")[0]; //课程时段ID
+                    selectdate = eval(selectrow).fchrdate.split("(")[0]; //日期
+                    cellClickRowIndex = rowIndex;
+                    cellField = field;
+                    if (showvalue.length > 1) {//弹出约车对话框
+                        //YueCheFunc(showvalue, 1, "", "");
+                        yueOpen_Dialog(start, end, "", $("input:radio:checked").attr("id"), selectdate, trainsessionid);
+                    }
+                    else {
+                        ChangeCarFun(start, end, showvalue[0], $("input:radio:checked").attr("id"), selectdate);
+                    }
+                }
+
+            });
+
+            //打印按钮
+            $("#btnprint").click(function () {
+                var sStuID = $("#fchrStudentID").val();
+                var sDate = $("#TrainingDate").val();
+                if (sStuID == "")
+                    alert("请输入学员编号");
+
+                window.open("/Print/PrintReg09.aspx?stuid=" + sStuID + "&TDate=" + sDate, "_blank", "location=no,scrollbars=yes toolbar=no,status=yes,width=1024,height=768");
+
+
+            });
+            ReceiveParms();
+
+        });
+
+        //判断是否传入学号
+        function ReceiveParms() {
+
+            if (ycmethod == "" || ycmethod == null)
+                ycmethod = "03";
+            if ($("#sid").val() != "") {
+                $("#BTNFind").click();
+            }
+
+        }
+
+    </script>
+    <script type="text/javascript">
+        function InputChar() {
+            if (window.event.keyCode == 13) {
+                $("#BTNFind").click()
+                window.event.keyCode = 0;
+            }
+        }
+        function FreshValid() {
+            return;
+            //             document.getElementById("head_ImgValid").src = "/validpng.aspx";
+            $("#head_ImgValid").attr("src", "/validpng.aspx");
+            $("#head_ImgValid").change();
+        }
+    </script>
+    <style type="text/css">
+        #remark
+        {
+            width: 391px;
+        }
+        #Remark
+        {
+            width: 353px;
+        }
+    </style>
+    <div class="ZF_xy_Left">
+        <ul>
+            <li><a href="jbxx.aspx">基本信息</a></li>
+            <li><a href="jfxx.aspx">缴费信息</a></li>
+            <li class="ZF_xyActive"><a href="wsyc.aspx">网上约车</a></li>
+            <li><a href="xxjd.aspx">详细进度</a></li>
+            <li><a href="dxrz.aspx">短信日志</a></li>
+            <li><a href="EvalBase.aspx">员工测评</a></li>
+            <li class=""><a href="km1.aspx" id="A1">预约科目一考试</a></li>
+        </ul>
+    </div>
+    <div class="ZF_xy_Right" style=" ">
+        <span id="ctl00_head_Label1"></span>
+        <div title="学员约车管理" style="padding-left: 15px;">
+            <div style="width: 96%; color: red; height: 24px; line-height: 24px; font-size: 18px;
+                background-color: #eeeeee; border: 1px dotted #f3f3f3;">
+                提示:24小时之内的车不能取消; 请不要频繁刷新本页面, 否则会造成无法约车.&nbsp;
+            </div>
+            <!--method="post"-->
+            <table id="tabled">
+                <tr>
+                    <td>
+                        学员编号：
+                    </td>
+                    <td>
+                        <input type="text" name="sid" id="sid" value='15147948' disabled="disabled"
+                            onkeypress="InputChar()" />
+                    </td>
+                    <td>
+                        <input id="BTNFind" type="button" style="width: 80px;" value="查  找" onkeypress="InputChar()" />
+                    </td>
+                    <td>
+                        验证码:
+                    </td>
+                    <td>
+                        <input id="TxtValid" style="width: 80px;" />
+                        <img id="ctl00_head_ImgValid" src="/validpng.aspx" style="border-width:0px;" /><div onclick="FreshValid()"
+                            style="font-size: 12px">
+                            换张图片</div>
+                    </td>
+                    <td>
+                    </td>
+                    <td>
+                        <input id="fchrRegistrationID" type="hidden" />
+                        <input id="fchrLessonID" type="hidden" />
+                        <input id="fchrLessonTypeID" type="hidden" />
+                        <input id="fintType" type="hidden" />
+                        <input id="fpsucess" type="hidden" />
+                    </td>
+                    <td>
+                    </td>
+                    <td>
+                    </td>
+                    <td>
+                    </td>
+                </tr>
+                <tr style=" display:none;">
+                    <td>
+                        绑定教练:
+                    </td>
+                    <td>
+                        <input id="carid" name="carid" onkeypress="InputChar()" type="hidden" />
+                        <input id="fchrRegToCoachID" style="width: 50px;" onkeypress="InputChar()" />
+                        <input id="fchrRegToCoachName" style="width: 70px;" />
+                    </td>
+                    <td>
+                        <input id="BTNFind0" type="button" style="width: 80px;" value="绑定教练" onclick="javascript:location.href='bdjl.aspx'" />
+                        <input type="hidden" name="sfid" id="sfid" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        学员编号：
+                    </td>
+                    <td>
+                        <input type="text" name="fchrStudentID" id="fchrStudentID" />
+                    </td>
+                    <td>
+                        学员姓名:
+                    </td>
+                    <td>
+                        <input type="text" name="fchrStudentName" id="fchrStudentName" />
+                    </td>
+                    <td>
+                        培训方式:
+                    </td>
+                    <td>
+                        <input type="text" name="fchrLessonTypeName" id="fchrLessonTypeName" />
+                    </td>
+                    <td style="display: none;">
+                        证件号码:
+                    </td>
+                    <td style="display: none;">
+                        <input type="text" name="fchrIDCardNO" id="fchrIDCardNO" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        当前阶段:
+                    </td>
+                    <td>
+                        <input type="text" name="fchrLessonName" id="fchrLessonName" />
+                    </td>
+                    <td>
+                        总共学时:
+                    </td>
+                    <td>
+                        <input type="text" name="stuTotal" id="stuTotal" />
+                    </td>
+                    <td>
+                        已约学时:
+                    </td>
+                    <td>
+                        <input type="text" name="ContractTotal" id="ContractTotal" />
+                    </td>
+                    <td style="display: none;">
+                        已练学时:
+                    </td>
+                    <td style="display: none;">
+                        <input type="text" name="trainTotal" id="trainTotal" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                       科一通过时间:
+                    </td>
+                    <td>
+                        <input type="text" name="fpsucessdate" id="fpsucessdate" />
+                    </td>
+                    <td>
+                        科二通过时间:
+                    </td>
+                    <td>
+                        <input type="text" name="zksucess" id="zksucess" />
+                    </td>
+                    <td>
+                    </td>
+                    <td>
+                    </td>
+                    <td style="display: none;">
+                    </td>
+                    <td style="display: none;">
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        训练阶段:
+                    </td>
+                    <td colspan="3">
+                        <div id="DivPeriod">
+                        </div>
+                    </td>
+                </tr>
+                <tr style="display: none;">
+                    <td>
+                        选择日期：
+                    </td>
+                    <td colspan="2">
+                        <input type="hidden" name="messager" id="messager" />
+                        <input id="TrainingDate" onclick="WdatePicker()" value='2017-06-10' />
+                    </td>
+                    <td>
+                        <a href="#" class="easyui-linkbutton" iconcls="icon-print" id="btnprint">打印</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                    </td>
+                    <td colspan="3">
+                    </td>
+                    <td colspan="3">
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        手机号:
+                    </td>
+                    <td colspan="5">
+                        <input id="mPhone" />
+                        取消约车时需要输入您报名时填写的手机号
+                    </td>
+                    <td>
+                    </td>
+                    <td>
+                    </td>
+                </tr>
+            </table>
+            <input id="stuid" name="stuid" type="hidden" />
+            <input id="fchrTrainPriceID" name="fchrTrainPriceID" type="hidden" />
+            <table id="TData" cellpadding="0" cellspacing="0" style="margin: 10px;">
+            </table>
+        </div>
+        <div id="changecardialog">
+            <table id="dgchange">
+            </table>
+        </div>
+        <div id="yuechedialog">
+            <table id="dgyueche">
+            </table>
+        </div>
+        <div id="divRemark" modal="true" style="width: 200; height: 70; padding-top: 10px;
+            padding-bottom: 20px; padding-left: 2px;">
+            <textarea id="fchrRemark" cols="50" rows="3"></textarea>
+            <br />
+            <a href="#" plain="false" class="easyui-linkbutton" id="btnEditRemark" iconcls="icon-edit">
+                保存</a> <a href="#" plain="false" class="easyui-linkbutton" id="btnEditRemarkCancel"
+                    iconcls="icon-cancel">取消</a>
+        </div>
+    </div>
+    <div id="wait" modal="true" style="width: 200; height: 70; padding: 0;">
+        正在处理，请稍后......</div>
+
+        <div class="ZF_xy_RightFoot">
+            <img src="../OrientalFashion/img/xy_main_foot.png" alt="" /></div>
+    </div>
+    <div class="clear">
+    </div>
+    <div class="OF_foot">
+        ALL COPYRIGHT © EASTER PIONEER DRIVING SCHOOL CO.,LTD.
+    </div>
+    </form>
+</body>
+</html>
+
+
+
+
