@@ -1,7 +1,4 @@
 # Python
 
-* just for python traing
-
-	- add a feature named feature--A
-	- fix-B
-	- feature-C
+* just for python training
+	- git 教程
