@@ -6,3 +6,5 @@
 	- fix-B
 	- feature-C
 	- feature-D
+	- just close #Issue_id=2
+Fix!!!
