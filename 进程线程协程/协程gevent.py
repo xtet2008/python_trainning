@@ -12,13 +12,13 @@
 import gevent
 import threading
 from gevent import monkey
-import urllib2
+import urllib.request as urllib
 monkey.patch_all()
 
 
 def get_body(i):
     print ('start', i)
-    urllib2.urlopen("http://www.baidu.com")
+    urllib.urlopen("http://www.baidu.com")
     print ('end', i)
 
 
