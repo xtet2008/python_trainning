@@ -12,22 +12,31 @@
 import gevent
 import threading
 from gevent import monkey
-import urllib.request as urllib
+from urllib import request
 monkey.patch_all()
 
 
-def get_body(i):
-    print ('start', i)
-    urllib.urlopen("http://www.baidu.com")
-    print ('end', i)
+def get_body(url):
+    print('Visit --> %s' % url)
+    try:
+        response = request.urlopen(url)
+        data = response.read()
+        print("%d bytes received from %s." % (len(data), url))
+    except Exception:
+        print("error")
 
 
-tasks = [gevent.spawn(get_body, i) for i in range(3)]
+urls = ['https://github.com/', 'https://blog.csdn.net/', 'https://bbs.csdn.net/', 'http://www.baidu.com',
+        "https://www.google.com.hk", "https://zhuanlan.zhihu.com/p/189993070"
+        ]
+
+tasks = [gevent.spawn(get_body, url) for url in urls]
 # print (tasks)
-print ('testing in gevent')
+print('testing in gevent')
 gevent.joinall(tasks)
 
-print ('\ntesting in threading')
-for i in range(3):
-    t = threading.Thread(target=get_body, args=(i,))
+
+print('\ntesting in multi-threading')
+for url in urls:
+    t = threading.Thread(target=get_body, args=(url,))
     t.start()
