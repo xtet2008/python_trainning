@@ -69,3 +69,21 @@
 #         finally:
 #             pass
 #     return result
+
+import time
+import timeit
+
+start = timeit.default_timer()
+
+
+def sleep_test(tag, seconds):
+    time.sleep(seconds)
+    print(tag)
+
+
+for i in range(20):
+    sleep_test(i, 0.05)
+
+end = timeit.default_timer()
+
+print('Running time: %s Seconds' % (end - start))
