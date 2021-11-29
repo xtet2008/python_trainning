@@ -93,8 +93,8 @@ class ali_pay(object):
 
     def get_biz_content(self,
                         out_biz_no="2008B29E0001",
-                        alipay_trade_no="2021112922001495535731765746",
-                        alipay_uid="2088032403295532",
+                        alipay_trade_no="",
+                        alipay_uid="",
                         order_pay_time="2021-11-24 15:13:12"
                         ):
         order_info = {
