@@ -14,7 +14,7 @@ import logging
 class ali_pay(object):
     def request_f2f_barcode_pay(self):
 
-        ali_app_id = ''
+        ali_app_id = '*65642'
         sign_type = 'RSA'
         alipay_rsa_key = '''
 '''
@@ -93,7 +93,7 @@ class ali_pay(object):
                         order_pay_time="2021-11-24 15:13:12"
                         ):
         biz_content = {
-            "out_trade_no": '20212008B29E0015_145904',  # nt_payment_alipay.name
+            "out_trade_no": '20212008B30E0002_111642',  # nt_payment_alipay.name
             "refund_amount": 0.01,
             "out_request_no": 'BSTESTALIPAY210039532',
             # "trade_no":'2021112422001434285702932376',

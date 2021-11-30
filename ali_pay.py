@@ -14,14 +14,13 @@ import logging
 class ali_pay(object):
     def request_f2f_barcode_pay(self):
 
-        ali_app_id = ''  # SLT支付宝配置，郑浩测试和张胜测试也只有减塑1个，马志宇能收着两个（减塑和电子小票）
+        ali_app_id = '*61325'  # SLT支付宝配置，郑浩测试和张胜测试也只有减塑1个，马志宇能收着两个（减塑和电子小票）
         # ali_app_id = ''  # Only支付宝配置，用陈艺文测试，只有减塑，没有电子小票，
         # ali_app_id = ''  # JJ支付宝支付，马晓松测试，也只有减塑，没有电子小票
         # ali_app_id = ''  # VM支付宝配置，国义能收着两个球
 
         sign_type = 'RSA'
         alipay_rsa_key = '''
-        -----
 '''
         alipay_rsa_key = alipay_rsa_key.strip()
         notify_url = None
@@ -92,9 +91,9 @@ class ali_pay(object):
         return result
 
     def get_biz_content(self,
-                        out_biz_no="2008B29E0001",
-                        alipay_trade_no="",
-                        alipay_uid="",
+                        out_biz_no="2008B30E0003",
+                        alipay_trade_no="2021113022001434285707361916",
+                        alipay_uid="2088002492134283",
                         order_pay_time="2021-11-24 15:13:12"
                         ):
         order_info = {
@@ -108,6 +107,8 @@ class ali_pay(object):
             "order_pay_time": order_pay_time,  # datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'),  # 订单支付时间
             "merchant_name": "ONLY",  # 商户名字，建议写 绫致，或 brand_name
             "shop_name": "杭州_工联大厦_ONLY",  # 门店名称; 拥有门店的场景时，必填; 否则无法展示门店信息
+            "terminal_id": "01010j602h5XNePEQYsG7yiE172fQ9jMMFMHS7nHIEEniC2SNowkLW4",  # 终端设备id;直饮水订单时，必填
+            "borrow_time": 25,  # 租借时长，精确到分钟;充电宝场景时，必填;
             "environmental_info": [
                 {
                     "environmental": "A",  # 环保类型: A:减塑/不使用购 物袋; B:无纸质小票
@@ -116,7 +117,31 @@ class ali_pay(object):
                 {
                     "environmental": "B",  # 环保类型: A:减塑/不使用购 物袋; B:无纸质小票
                     "environmental_ext": "dianzixiaopiao",  # 环保行为内容字典值: 无纸质小票(电子小票):dianzixiaopiao;
-                }
+                },
+                {
+                    "environmental": "C",
+                    "environmental_ext": "zhiyinshui",
+                },
+                {
+                    "environmental": "D",
+                    "environmental_ext": "lvseruzhu",
+                },
+                {
+                    "environmental": "F",
+                    "environmental_ext": "saomagoupiao",
+                },
+                {
+                    "environmental": "H",
+                    "environmental_ext": "chongdianbao",
+                },
+                {
+                    "environmental": "I",
+                    "environmental_ext": "wangshangjijian",
+                },
+                # {
+                #     "environmental": "L",
+                #     "environmental_ext": "xinyongzhu",
+                # }
             ]
         }
 
