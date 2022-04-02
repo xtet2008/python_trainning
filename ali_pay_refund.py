@@ -14,9 +14,24 @@ import logging
 class ali_pay(object):
     def request_f2f_barcode_pay(self):
 
-        ali_app_id = '*65642'
+        ali_app_id = '2016010501065642'
         sign_type = 'RSA'
         alipay_rsa_key = '''
+        -----BEGIN RSA PRIVATE KEY-----
+MIICXgIBAAKBgQCxbLD/b/cPKn5xk3IEPMDeo/FSL5Vr6DvvA52aTTZQMJYN/9yI
+zPwr+bZ+FDIn9LSXpdu4Nzt09GWD7Hrk9q188Gmhp8IDOl0m7ggMeYogWEfaxqEx
+0SBLEfgWHIC9YF0agES5TwGD3h6jbP1gm3maQkVYCZ+wLUafXhys3+8qawIDAQAB
+AoGBAJPtLFF8l38UjeHB7jDsOl4mUACW3bzfHoE0AYXx1FPdfm5jogqI5cMAaxAJ
+ZJv9oUhCp8OagT8MuUrZsskNhiyeL61nJ6ZS0ji6OTH/tkxmmR6MYzDvzTVG64Tv
+25wH0Dr6s9mYy5MtbSHlYUZ7VSh2JfzLbnIN4x9EdJ4dejDJAkEA3/TgVbAdy7zZ
+YTcOpwcfNS1r6O/RdOEiHDYejhQ4XGBvvmqzo+gz4E7cbo1E2FOKA0BueRWNh8fY
+j3KBceGxrQJBAMrPbtqQ7mIZrFn84EOn+Wg62BY9J9f8I460YEpjfLiOIvC+8gVF
+z9ptmCPmPpuACZ/pAg1C3046rqcao1v8P3cCQQCskyEPRpAfQB3uSKPU16sXqjGe
+JLatrxI+1QFEkJZBsNpKzCQzaKoY7gv0cI2dePo/uTWnvpD6EWhyWVUgMT9dAkBU
+fRHrT9FfYN6iJmyvAr0uJMV8jkGZAts1SgOLOeLtZ5k6vfFJLQooLtvgqLyQP0jD
+K2jFaYRprJyx1LEVUwKFAkEAvCIAwms2vW7Wytvf0+uXliP0xYeb5WxAVpoziv7N
+0PYPenaM4lppNzjgbl9o8TjYsbMu5towFYNXzpXBmySoEg==
+-----END RSA PRIVATE KEY-----
 '''
         alipay_rsa_key = alipay_rsa_key.strip()
         notify_url = None
@@ -93,7 +108,7 @@ class ali_pay(object):
                         order_pay_time="2021-11-24 15:13:12"
                         ):
         biz_content = {
-            "out_trade_no": '20212008B30E0002_111642',  # nt_payment_alipay.name
+            "out_trade_no": '20212008C10E0001_144927',  # nt_payment_alipay.name
             "refund_amount": 0.01,
             "out_request_no": 'BSTESTALIPAY210039532',
             # "trade_no":'2021112422001434285702932376',

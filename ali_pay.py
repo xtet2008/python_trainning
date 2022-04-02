@@ -14,13 +14,28 @@ import logging
 class ali_pay(object):
     def request_f2f_barcode_pay(self):
 
-        ali_app_id = '*61325'  # SLT支付宝配置，郑浩测试和张胜测试也只有减塑1个，马志宇能收着两个（减塑和电子小票）
+        ali_app_id = '2016022401161325'  # SLT支付宝配置，郑浩测试和张胜测试也只有减塑1个，马志宇能收着两个（减塑和电子小票）
         # ali_app_id = ''  # Only支付宝配置，用陈艺文测试，只有减塑，没有电子小票，
         # ali_app_id = ''  # JJ支付宝支付，马晓松测试，也只有减塑，没有电子小票
         # ali_app_id = ''  # VM支付宝配置，国义能收着两个球
 
         sign_type = 'RSA'
         alipay_rsa_key = '''
+        -----BEGIN RSA PRIVATE KEY-----
+MIICXAIBAAKBgQDJeZWEk2WFtmg2slyyfmfMdW7eFE9hZDD23DEs12mUCJ+dWNOM
+Ik8n3u0RxDGW5UqdIloN2QWtBeP0FVTBZAMyo2mn+A7Zl1jYtKchHrrDB/7EiA4z
+1ES2YvUf9Qd0hiANbJZvh6r/6khsAJX1xmLcNpOrJXs0FgKnuQSrIdrWAwIDAQAB
+AoGAMG2aRADOEWL0D9m1sG3z81By8sy8+/MCVgQ9icLJrPyZqU+1oeSJVFMgdvnK
+1bONyNF+BgAZfiqBTaVm9wlcPv2WyPmPovDLEXnjf2hm0ueatxbGWOQz2UlB56G0
+6U50Hgwhc8Gxpjly+cSkJtELc8maofCwefYaHmWDt0zY3cECQQDnv/NK+hk9WfGm
+HtjFCXeMVzVnuVbz7BlIAcVOMfFdCnfgBjl+rxtKkIfEMYjT4IJIIszITMer6HM6
+rFLrz4XhAkEA3o6jjuz+W57jVgU26jEJuZvphZ24i/WneLs1in/72Yuv+A4CyzEI
+5O1zbbcJnmgTjEdfDKbIe4WhqBd9h7wQYwJAcacFHaQBdMEDbUB7dkXqRv0Nx8xx
+BDapP1L+/BYqFELp/weOcr5VWAABVQol3CKiQdYvL5vX4EqjGAcis1qWgQJBANv8
+ildgkxvlNjl09g8PYdmB75YPjLdrnpqMEiRQ1ZT3qny6/K/0TCJdQ9eTMYLOxWPH
+uIA867aNJHmOnpponpkCQF+TK77PGFQI1xNs9aBv4anwGj1hs6UdsuY/M5BQGS71
+evuHlxG2+wyyiefoYvk5Oh7o+Qswl/EUo6YxDCjMPE0=
+-----END RSA PRIVATE KEY-----
 '''
         alipay_rsa_key = alipay_rsa_key.strip()
         notify_url = None
@@ -91,8 +106,8 @@ class ali_pay(object):
         return result
 
     def get_biz_content(self,
-                        out_biz_no="2008B30E0003",
-                        alipay_trade_no="2021113022001434285707361916",
+                        out_biz_no="2008C01E0001",
+                        alipay_trade_no="2021120122001434285708772471",
                         alipay_uid="2088002492134283",
                         order_pay_time="2021-11-24 15:13:12"
                         ):
