@@ -34,6 +34,11 @@ class Test(object):
 abcd(x='abc')
 
 obj_t = Test()
+
+print('staticfun' in dir(obj_t))
+
+exit(1)
+
 # obj_t.instancefun
 obj_t.instancefun()  # 对象调用实例方法
 # obj_t.function  # 对象不能调用函数？

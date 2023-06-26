@@ -13,7 +13,7 @@ class TestCompute(object):
 
     def work(self):
         res = 0
-        for i in range(50000000):
+        for i in range(100000000):
             res *= i
 
     def run(self, tag='Process'):
@@ -42,7 +42,7 @@ class TestIO(object):
     def run(self, tag='Process'):
         l = []
         start = time.time()
-        for i in range(400):
+        for i in range(4000):
             p = Process(target=self.work) if tag == 'Process' else Thread(target=self.work)
             # 这种io密集型任务如果用多进程的话，大部分时间会耗在创建进程上
             l.append(p)
