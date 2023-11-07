@@ -1,7 +1,7 @@
 # coding:utf-8
 # @Time : 2023/3/13 22:37
 # @Author : Andy.Zhang
-# @Desc : Python 3.X
+# @Desc : python_trainning 3.X
 
 """
 Question
