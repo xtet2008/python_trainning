@@ -5,6 +5,8 @@
 
 
 '''
+参考资料： https://www.yanxishe.com/columnDetail/21692
+
 async 和 await 是原生协程，是Python3.5以后引入的两个关键词，不需要额外安装依赖包即可使用
 asyncio 是 Python3.7 以上的模块，所以最好能使用 python3.7 以上版本
 
