@@ -3,3 +3,6 @@
 .idea/vcs.xml
 itchat.pkl
 QR.png
+
+__pycache__
+
