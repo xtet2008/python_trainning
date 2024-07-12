@@ -24,9 +24,9 @@ This project contains a simple web scraper that extracts a list of colleges from
 
 1. Install the required packages:
     ```sh
-    pip install requests aiohttp
-    pip install requests asyncio
-    pip install requests beautifulsoup4
+    pip install aiohttp
+    pip install asyncio
+    pip install beautifulsoup4
     ```
 
 2. Run the scraper:
