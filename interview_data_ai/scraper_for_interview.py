@@ -341,9 +341,10 @@ async def fetch_url(session, url):
     }
 
     print(f"began to download {url}")
-    for attempt in range(10):
+    global SCRAPER_SETTINGS
+    for attempt in range(SCRAPER_SETTINGS.get("max_attempt_times_per_each_url", 10)):
         try:
-            async with async_timeout.timeout(3):
+            async with async_timeout.timeout(SCRAPER_SETTINGS.get("timeout_in_seconds_per_each_url", 3)):
                 async with session.get(url, headers=headers) as response:
                     # if the status code not in 200-399，then will raise an exception
                     response.raise_for_status()
@@ -445,6 +446,16 @@ async def main(_url, _download_college_list):
                 _ = await asyncio.gather(*tasks)
 
 if __name__ == "__main__":
+    '''
+    Here we can flexibly configure the corresponding parameters according to the actual network environment
+    That maximize the success rate of the crawler.
+    '''
+    SCRAPER_SETTINGS = {
+        "max_attempt_times_per_each_url": 10,
+        "timeout_in_seconds_per_each_url": 3
+
+    }
+
     url = 'https://bigfuture.collegeboard.org/colleges'
     download_college_list = ["Massachusetts Institute of Technology", "Harvard College"]
     asyncio.run(main(url, download_college_list))
