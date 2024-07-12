@@ -1,0 +1,739 @@
+{
+    "overview": {
+        "Type": "4-year \u2022 Private",
+        "Campus Life": "Medium \u2022 Urban",
+        "Average Per Year After Aid": "$31K",
+        "SAT Range": "Not available",
+        "Graduation Rate": "96%",
+        "Description": "Massachusetts Institute of Technology is a medium, 4-year, private university. This coed college is located in a city in an urban setting and is primarily a residential campus. It offers bachelor's, master's, and doctoral degrees.",
+        "From the Institution": "The essence of MIT is our appetite for problems--especially those big, intractable, complicated problems whose solutions make a permanent difference. While MIT is a research university committed to world-class inquiry in math, science, and engineering, MIT has equally distinguished programs in architecture, the humanities, management, and the social sciences. A diverse, supportive campus environment--with an incredible range of student groups and athletic and fitness opportunities--ensures that it's not all about the work. And in MIT's intensely creative atmosphere, the arts flourish in all their forms."
+    },
+    "admissions": {
+        "Acceptance Rate": "5%",
+        "Regular Application Due": "Not available",
+        "SAT Range": "Not available*",
+        "ACT Range": "Not available*",
+        "By the Numbers": "These ranges reflect what most admitted students scored, but many are outside these ranges.",
+        "GPA Range": "GPA range information is not available for this college.",
+        "ACT Composite Range": "ACT Information is not available for this college",
+        "Applicants_Data": {
+            "Total Applicants": 26914,
+            "Admitted": 1291,
+            "Enrolled": 1091
+        },
+        "Application Requirements": {
+            "High School GPA": "Recommended",
+            "High School Rank": "Considered but not required",
+            "College Prep Courses": "Recommended",
+            "SAT/ACT Scores": "Required",
+            "Recommendations": "Recommended"
+        },
+        "Application Deadline": "November 1",
+        "Application Fee": "Not available",
+        "Application Types Accepted": [
+            "Online through college's own website"
+        ]
+    },
+    "academics": {
+        "Graduation Rate": "96%",
+        "Majors Available": "51",
+        "Student-to-Faculty Ratio": "3:1",
+        "Retention Rate": "99%",
+        "AP Credit Policy": "2023-2024 policy: Only one test in a given subject area will be recognized for Advanced Placement credit. MIT does not accept AP or transfer credit for all subjects. No credit is awarded for scores lower than 5.",
+        "AP Credits List": {
+            "Offers credits": "Yes",
+            "Offers placement into advanced courses": "Yes"
+        },
+        "Course List": [
+            {
+                "2-D Art and Design": {
+                    "Min Score Required": 5,
+                    "Number of Credits": "9",
+                    "Course Equivalent": null
+                }
+            },
+            {
+                "3-D Art and Design": {
+                    "Min Score Required": 5,
+                    "Number of Credits": "9",
+                    "Course Equivalent": null
+                }
+            },
+            {
+                "Art History": {
+                    "Min Score Required": 5,
+                    "Number of Credits": "9",
+                    "Course Equivalent": null
+                }
+            },
+            {
+                "Calculus AB": {
+                    "Min Score Required": 5,
+                    "Number of Credits": null,
+                    "Course Equivalent": null
+                }
+            },
+            {
+                "Calculus BC": {
+                    "Min Score Required": 5,
+                    "Number of Credits": null,
+                    "Course Equivalent": "18.01"
+                }
+            },
+            {
+                "Chinese Language and Culture": {
+                    "Min Score Required": 5,
+                    "Number of Credits": "9",
+                    "Course Equivalent": null
+                }
+            },
+            {
+                "Comparative Government and Politics": {
+                    "Min Score Required": 5,
+                    "Number of Credits": "9",
+                    "Course Equivalent": null
+                }
+            },
+            {
+                "Drawing": {
+                    "Min Score Required": 5,
+                    "Number of Credits": "9",
+                    "Course Equivalent": null
+                }
+            },
+            {
+                "English Language and Composition": {
+                    "Min Score Required": 5,
+                    "Number of Credits": "9",
+                    "Course Equivalent": null
+                }
+            },
+            {
+                "English Literature and Composition": {
+                    "Min Score Required": 5,
+                    "Number of Credits": "9",
+                    "Course Equivalent": null
+                }
+            },
+            {
+                "European History": {
+                    "Min Score Required": 5,
+                    "Number of Credits": "9",
+                    "Course Equivalent": null
+                }
+            },
+            {
+                "French Language and Culture": {
+                    "Min Score Required": 5,
+                    "Number of Credits": "9",
+                    "Course Equivalent": null
+                }
+            },
+            {
+                "German Language and Culture": {
+                    "Min Score Required": 5,
+                    "Number of Credits": "9",
+                    "Course Equivalent": null
+                }
+            },
+            {
+                "Human Geography": {
+                    "Min Score Required": 5,
+                    "Number of Credits": "9",
+                    "Course Equivalent": null
+                }
+            },
+            {
+                "Italian Language and Culture": {
+                    "Min Score Required": 5,
+                    "Number of Credits": "9",
+                    "Course Equivalent": null
+                }
+            },
+            {
+                "Japanese Language and Culture": {
+                    "Min Score Required": 5,
+                    "Number of Credits": "9",
+                    "Course Equivalent": null
+                }
+            },
+            {
+                "Latin": {
+                    "Min Score Required": 5,
+                    "Number of Credits": "9",
+                    "Course Equivalent": null
+                }
+            },
+            {
+                "Music Theory": {
+                    "Min Score Required": 5,
+                    "Number of Credits": "9",
+                    "Course Equivalent": null
+                }
+            },
+            {
+                "Physics C: Electricity and Magnetism": {
+                    "Min Score Required": 5,
+                    "Number of Credits": null,
+                    "Course Equivalent": "8.01"
+                }
+            },
+            {
+                "Physics C: Mechanics": {
+                    "Min Score Required": 5,
+                    "Number of Credits": null,
+                    "Course Equivalent": "8.01"
+                }
+            },
+            {
+                "Research": {
+                    "Min Score Required": 5,
+                    "Number of Credits": "9",
+                    "Course Equivalent": null
+                }
+            },
+            {
+                "Seminar": {
+                    "Min Score Required": 5,
+                    "Number of Credits": "9",
+                    "Course Equivalent": null
+                }
+            },
+            {
+                "Spanish Language and Culture": {
+                    "Min Score Required": 5,
+                    "Number of Credits": "9",
+                    "Course Equivalent": null
+                }
+            },
+            {
+                "Spanish Literature and Culture": {
+                    "Min Score Required": 5,
+                    "Number of Credits": "9",
+                    "Course Equivalent": null
+                }
+            },
+            {
+                "United States Government and Politics": {
+                    "Min Score Required": 5,
+                    "Number of Credits": "9",
+                    "Course Equivalent": null
+                }
+            },
+            {
+                "United States History": {
+                    "Min Score Required": 5,
+                    "Number of Credits": "9",
+                    "Course Equivalent": null
+                }
+            },
+            {
+                "World History: Modern": {
+                    "Min Score Required": 5,
+                    "Number of Credits": "9",
+                    "Course Equivalent": null
+                }
+            }
+        ],
+        "Majors and Degrees": "The college offers the following degrees: Bachelor's, Master's, and Doctoral",
+        "Major List": [
+            "Aerospace, Aeronautical, and Astronautical/Space Engineering, General",
+            "Anthropology",
+            "Architectural and Building Sciences/Technology",
+            "Architecture",
+            "Atmospheric Sciences and Meteorology, General",
+            "Bioengineering and Biomedical Engineering",
+            "Biology/Biological Sciences, General",
+            "Business/Commerce, General",
+            "Chemical Engineering",
+            "Chemical and Biomolecular Engineering",
+            "Chemistry, General",
+            "City/Urban, Community, and Regional Planning",
+            "Civil Engineering, General",
+            "Cognitive Science, General",
+            "Computational Biology",
+            "Computer Science",
+            "Computer and Information Sciences, General",
+            "Creative Writing",
+            "Digital Communication and Media/Multimedia",
+            "Drama and Dramatics/Theater Arts, General",
+            "Econometrics and Quantitative Economics",
+            "Electrical and Electronics Engineering",
+            "English Language and Literature, General",
+            "Environmental/Environmental Health Engineering",
+            "Financial Mathematics",
+            "Foreign Languages and Literatures, General",
+            "Geology/Earth Science, General",
+            "Geophysics and Seismology",
+            "History, General",
+            "Liberal Arts and Sciences/Liberal Studies",
+            "Linguistics",
+            "Management Science",
+            "Mass Communication/Media Studies",
+            "Materials Engineering",
+            "Mathematics and Computer Science",
+            "Mathematics, General",
+            "Mechanical Engineering",
+            "Meteorology",
+            "Music, General",
+            "Neuroscience",
+            "Nuclear Engineering",
+            "Oceanography, Chemical and Physical",
+            "Operations Research",
+            "Philosophy",
+            "Physics, General",
+            "Planetary Astronomy and Science",
+            "Political Science and Government, General",
+            "Real Estate Development",
+            "Science, Technology and Society",
+            "Systems Engineering",
+            "Transportation and Highway Engineering"
+        ],
+        "Special Academics Program": [
+            "Cooperative Education",
+            "Cross-Registration",
+            "Double Major",
+            "English as a Second Language",
+            "Internships",
+            "ROTC, Air Force",
+            "ROTC, Army",
+            "ROTC, Navy",
+            "Study Abroad",
+            "Teacher Certification",
+            "Undergraduate Research"
+        ]
+    },
+    "tuition-and-costs": {
+        "Average Per Year After Aid": "$30,958",
+        "Students Receiving Financial Aid": "56%",
+        "Average Aid Package": "$64,857",
+        "Financial Aid Application Due": "February 15",
+        "Tuition": {
+            "Average Net Price": "$30,958 per year",
+            "Description": ""
+        },
+        "Average Net Price by Household Income": {
+            "<$30k": "Not available",
+            "$30-48k": "Not available",
+            "$48-75k": "Not available",
+            "$75-110k": "Not available",
+            "$110k+": "$37,836 per year"
+        },
+        "Sticker Price": {
+            "Tuition": "$61,990 per year"
+        },
+        "Other Costs": {
+            "Housing": "$20,280 per year",
+            "Books and Supplies": "$910 per year",
+            "Personal Expenses": "$2,374 per year",
+            "Transportation": "Not available"
+        },
+        "Financial Aid": {
+            "Description": "Financial aid can include grants, loans, scholarships and work-study jobs. Financial aid packages vary depending on your financial need. Most colleges determine financial need based on your FAFSA.",
+            "Distribution Details": {
+                "Students Receiving Financial Aid": "56%",
+                "Freshmen With Need and Received Financial Aid": "99%",
+                "Percent of Need Met": "100%"
+            },
+            "Aid Package Details": {
+                "Average Aid Packages Awarded": "$64,857",
+                "Need-Based Scholarship or Grant Award": "$63,606",
+                "Need-Based Loan Amount": "$2,769",
+                "Non-Need-Based Aid": "Not available",
+                "Debt at Graduation": "$26,522"
+            },
+            "Tuition Guarantee Plans": "Tuition at time of first enrollment guaranteed only to students making advance payment"
+        },
+        "Financial Aid Dates": {
+            "Description": "Dates are subject to change, so confirm important deadlines by visiting the college website.",
+            "Application Due": "Feb 15",
+            "Priority Application Due": "Feb 15",
+            "Notification Date": "Mar 15",
+            "Response Due": "Not available"
+        }
+    },
+    "campus-life": {
+        "Setting": "Urban",
+        "Undergraduate Students": "4,638",
+        "Average Per Year for Campus Housing": "$20,280",
+        "Sports": "Club, Intercollegiate, Intramural, NCAA Division I and NCAA Division III",
+        "Housing": {
+            "Average Housing Cost": "$20,280 per year",
+            "First-Years in College Housing": "100%"
+        },
+        "Housing Options": [
+            "Apartments For Married Students",
+            "Apartments For Single Students",
+            "Coed Housing",
+            "Cooperative Housing",
+            "Fraternity/Sorority Housing",
+            "Gender Neutral Housing",
+            "Living Learning Communities",
+            "Special Housing For Disabled Students",
+            "Theme Housing",
+            "Women's Housing"
+        ],
+        "Course Sports": {
+            "Archery": {
+                "Female": [
+                    "Club"
+                ],
+                "Male": [
+                    "Club"
+                ]
+            },
+            "Badminton": {
+                "Female": [
+                    "Club",
+                    "Intramural"
+                ],
+                "Male": [
+                    "Club",
+                    "Intramural"
+                ]
+            },
+            "Baseball": {
+                "Male": [
+                    "Intercollegiate",
+                    "NCAA Division III"
+                ]
+            },
+            "Basketball": {
+                "Female": [
+                    "Intercollegiate",
+                    "Intramural",
+                    "NCAA Division III"
+                ],
+                "Male": [
+                    "Intercollegiate",
+                    "Intramural",
+                    "NCAA Division III"
+                ]
+            },
+            "Cheerleading": {
+                "Female": [
+                    "Club"
+                ],
+                "Male": [
+                    "Club"
+                ]
+            },
+            "Cricket": {
+                "Male": [
+                    "Club"
+                ],
+                "Female": [
+                    "Club"
+                ]
+            },
+            "Cross-Country": {
+                "Female": [
+                    "Intercollegiate",
+                    "NCAA Division III"
+                ],
+                "Male": [
+                    "Intercollegiate",
+                    "NCAA Division III"
+                ]
+            },
+            "Diving": {
+                "Female": [
+                    "Intercollegiate"
+                ],
+                "Male": [
+                    "Intercollegiate"
+                ]
+            },
+            "Fencing": {
+                "Female": [
+                    "Intercollegiate",
+                    "NCAA Division III"
+                ],
+                "Male": [
+                    "Intercollegiate"
+                ]
+            },
+            "Field Hockey": {
+                "Female": [
+                    "Intercollegiate",
+                    "NCAA Division III"
+                ]
+            },
+            "Football": {
+                "Male": [
+                    "Intercollegiate",
+                    "NCAA Division III"
+                ]
+            },
+            "Football (Non-Tackle)": {
+                "Female": [
+                    "Intramural"
+                ],
+                "Male": [
+                    "Intramural"
+                ]
+            },
+            "Golf": {
+                "Male": [
+                    "Club"
+                ],
+                "Female": [
+                    "Club"
+                ]
+            },
+            "Gymnastics": {
+                "Female": [
+                    "Club"
+                ],
+                "Male": [
+                    "Club"
+                ]
+            },
+            "Ice Hockey": {
+                "Female": [
+                    "Club",
+                    "Intramural"
+                ],
+                "Male": [
+                    "Club",
+                    "Intramural"
+                ]
+            },
+            "Judo": {
+                "Female": [
+                    "Club"
+                ],
+                "Male": [
+                    "Club"
+                ]
+            },
+            "Lacrosse": {
+                "Female": [
+                    "Intercollegiate",
+                    "NCAA Division III"
+                ],
+                "Male": [
+                    "Intercollegiate",
+                    "NCAA Division III"
+                ]
+            },
+            "Rifle": {
+                "Female": [
+                    "Intercollegiate"
+                ],
+                "Male": [
+                    "Intercollegiate"
+                ],
+                "Co-Ed": [
+                    "NCAA Division III"
+                ]
+            },
+            "Rowing (Crew)": {
+                "Female": [
+                    "Club",
+                    "Intercollegiate",
+                    "NCAA Division I"
+                ],
+                "Male": [
+                    "Club",
+                    "Intercollegiate"
+                ]
+            },
+            "Rugby": {
+                "Female": [
+                    "Club"
+                ],
+                "Male": [
+                    "Club"
+                ]
+            },
+            "Sailing": {
+                "Female": [
+                    "Intercollegiate"
+                ],
+                "Male": [
+                    "Intercollegiate"
+                ]
+            },
+            "Soccer": {
+                "Male": [
+                    "Club",
+                    "Intercollegiate",
+                    "Intramural",
+                    "NCAA Division III"
+                ],
+                "Female": [
+                    "Club",
+                    "Intercollegiate",
+                    "Intramural",
+                    "NCAA Division III"
+                ]
+            },
+            "Softball": {
+                "Female": [
+                    "Intercollegiate",
+                    "Intramural",
+                    "NCAA Division III"
+                ],
+                "Male": [
+                    "Intramural"
+                ]
+            },
+            "Squash": {
+                "Male": [
+                    "Intercollegiate"
+                ]
+            },
+            "Swimming": {
+                "Female": [
+                    "Intercollegiate",
+                    "NCAA Division III"
+                ],
+                "Male": [
+                    "Intercollegiate",
+                    "NCAA Division III"
+                ]
+            },
+            "Table Tennis": {
+                "Female": [
+                    "Club",
+                    "Intramural"
+                ],
+                "Male": [
+                    "Club",
+                    "Intramural"
+                ]
+            },
+            "Tennis": {
+                "Male": [
+                    "Club",
+                    "Intercollegiate",
+                    "Intramural",
+                    "NCAA Division III"
+                ],
+                "Female": [
+                    "Club",
+                    "Intercollegiate",
+                    "Intramural",
+                    "NCAA Division III"
+                ]
+            },
+            "Track And Field": {
+                "Female": [
+                    "Intercollegiate"
+                ],
+                "Male": [
+                    "Intercollegiate"
+                ]
+            },
+            "Track: Indoor": {
+                "Female": [
+                    "NCAA Division III"
+                ],
+                "Male": [
+                    "NCAA Division III"
+                ]
+            },
+            "Track: Outdoor": {
+                "Female": [
+                    "NCAA Division III"
+                ],
+                "Male": [
+                    "NCAA Division III"
+                ]
+            },
+            "Triathlon": {
+                "Female": [
+                    "Club"
+                ],
+                "Male": [
+                    "Club"
+                ]
+            },
+            "Ultimate Frisbee": {
+                "Male": [
+                    "Club",
+                    "Intramural"
+                ],
+                "Female": [
+                    "Club",
+                    "Intramural"
+                ]
+            },
+            "Volleyball": {
+                "Female": [
+                    "Club",
+                    "Intercollegiate",
+                    "Intramural",
+                    "NCAA Division III"
+                ],
+                "Male": [
+                    "Club",
+                    "Intercollegiate",
+                    "Intramural",
+                    "NCAA Division III"
+                ]
+            },
+            "Water Polo": {
+                "Female": [
+                    "Club",
+                    "Intramural"
+                ],
+                "Male": [
+                    "Intercollegiate",
+                    "Intramural",
+                    "NCAA Division III"
+                ]
+            },
+            "Wrestling": {
+                "Male": [
+                    "Club"
+                ]
+            }
+        },
+        "Activities": [
+            "Air Force ROTC",
+            "Army ROTC",
+            "Campus Ministries",
+            "Choral Groups",
+            "Concert Band",
+            "Dance",
+            "Drama/Theater",
+            "Film",
+            "International Student Organization",
+            "Jazz Band",
+            "Literary Magazine",
+            "Marching Band",
+            "Model UN",
+            "Music Ensembles",
+            "Musical Theater",
+            "Naval ROTC",
+            "Radio Station",
+            "Student Government",
+            "Student Newspaper",
+            "Symphony Orchestra",
+            "Television Station",
+            "Yearbook"
+        ],
+        "Student Body": {
+            "Total Undergrad Students": "4,638",
+            "Total Graduate Students": "7,344",
+            "Full-Time Students": "4,538",
+            "Part-Time Students": "33"
+        },
+        "Race and Ethnicity": {
+            "Black or African American": "9%",
+            "Asian": "34%",
+            "Hispanic or Latino": "14%",
+            "Multiracial": "7%",
+            "Native American": "Less than 1%",
+            "Pacific Islander": "Less than 1%",
+            "Unknown": "3%",
+            "White": "21%",
+            "International (Non-Citizen)": "11%"
+        },
+        "Student Primary Residence": {
+            "Out-of-State": "91%"
+        }
+    }
+}
