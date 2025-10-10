@@ -238,7 +238,7 @@ def main():
     parser.add_argument('--check', action='store_true', help='检查数据库状态')
 
     args = parser.parse_args()
-    args.license_key = args.license_key or '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'
+    args.license_key = args.license_key or 'type_license_key_here'
     print(f'\nMaxMind license_key:{args.license_key}\n')
 
     downloader = GeoIPDownloader(license_key=args.license_key)
